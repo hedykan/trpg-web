@@ -34,17 +34,25 @@
     </a-col>
     <a-col :span="2"> </a-col>
     <a-col :span="10">
-      <a-divider orientation="left">添加新节点</a-divider>
-      <EditAdd />
-      <a-divider orientation="left">链接新节点</a-divider>
-      <EditLink />
+      <a-menu v-model:selectedKeys="current" mode="horizontal">
+        <a-menu-item key="add">添加</a-menu-item>
+        <a-menu-item key="link">链接</a-menu-item>
+      </a-menu>
+      <div v-if="check.add">
+        <a-divider orientation="left">添加新节点</a-divider>
+        <EditAdd />
+      </div>
+      <div v-if="check.link">
+        <a-divider orientation="left">链接新节点</a-divider>
+        <EditLink />
+      </div>
     </a-col>
     <a-col :span="1"> </a-col>
   </a-row>
 </template>
 <script>
 import axios from "axios";
-import { reactive, toRefs, provide } from "vue";
+import { ref, reactive, toRefs, provide, watch } from "vue";
 import EditAdd from "./EditAdd.vue";
 import EditLink from "./EditLink.vue";
 import EditEd from "./EditEd.vue";
@@ -55,6 +63,26 @@ export default {
     EditEd,
   },
   setup() {
+    var current = ref(["add"]);
+    var check = reactive({
+      add: true,
+      link: false,
+    });
+    watch(current, function () {
+      clear_check();
+      switch (current.value[0]) {
+        case "add":
+          check.add = true;
+          break;
+        case "link":
+          check.link = true;
+          break;
+      }
+    });
+    var clear_check = function () {
+      check.add = false;
+      check.link = false;
+    };
     var res = reactive({
       list: [],
       post: {
@@ -73,7 +101,6 @@ export default {
     axios.defaults.baseURL = "http://127.0.0.1:12345/";
     var get_list = function () {
       axios.get("story/list").then(function (response) {
-        console.log(response);
         res.list = response.data.data;
       });
     };
@@ -85,9 +112,11 @@ export default {
     get_list();
     provide("edit_get_list", get_list);
     return {
+      current,
       ...toRefs(res),
       get_list,
       delete_node,
+      check,
     };
   },
 };

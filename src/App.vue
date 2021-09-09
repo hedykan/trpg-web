@@ -13,13 +13,13 @@
           <a-menu
             theme="dark"
             mode="horizontal"
-            :default-selected-keys="['2']"
+            :default-selected-keys="['1']"
             :style="{ lineHeight: '64px' }"
           >
             <a-menu-item key="1">
               <router-link to="/">Home</router-link>
             </a-menu-item>
-            <a-menu-item key="1">
+            <a-menu-item key="2">
               <router-link to="/edit">Edit</router-link>
             </a-menu-item>
           </a-menu>

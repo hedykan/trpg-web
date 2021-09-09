@@ -82,7 +82,7 @@
       </a-button>
     </a-form-item>
     <a-form-item v-bind="formItemLayoutWithOutLabel">
-      <a-button type="primary" @click="add_node(add)">新增</a-button>
+      <a-button type="primary" @click="add_node(add.val, add.input, add.output)">新增</a-button>
     </a-form-item>
   </a-form>
 </template>
@@ -150,17 +150,17 @@ export default {
         res.add.output.splice(id, 1);
       }
     };
-    var add_node = function (node) {
+    var add_node = function (val, input, output) {
       let i;
-      for (i = 0; i < node.input.length; i++) {
-        node.input[i].id = parseInt(node.input[i].id)
+      for (i = 0; i < input.length; i++) {
+        input[i].id = parseInt(input[i].id)
       }
-      for (i = 0; i < node.output.length; i++) {
-        node.output[i].id = parseInt(node.output[i].id)
+      for (i = 0; i < output.length; i++) {
+        output[i].id = parseInt(output[i].id)
       }
-      console.log(node.val, node.input, node.output);
+      console.log(val, input, output);
       axios
-        .post("story/node_add", { val: node.val, input: node.input, output: node.output })
+        .post("story/node_add", { val: val, input: input, output: output })
         .then(function (response) {
           if (response.data.data === false) {
             alert("添加失败，输入或输出节点不存在");
