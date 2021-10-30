@@ -10,42 +10,58 @@
           style="text-align: left"
         >
           <a-card>
-            <a-descriptions :title="'故事节点' + item.Id">
-              <a-descriptions-item label="节点号">
-                {{ item.Id }}
-              </a-descriptions-item>
-              <a-descriptions-item label="输入节点">
-                {{ item.Input }}
-              </a-descriptions-item>
-              <a-descriptions-item label="输出节点">
-                {{ item.Output }}
-              </a-descriptions-item>
-              <a-descriptions-item label="内容">
-                {{ item.Val }}
-              </a-descriptions-item>
-            </a-descriptions>
-            <a-button type="primary" @click="delete_node(item.Id)"
-              >删除该节点</a-button
-            >
+            <a-row>
+              <a-col :span="24">节点{{ item.Id }}</a-col>
+              <a-col :span="24">节点内容:{{ item.Val }}</a-col>
+              <a-col :span="12">
+                <a-row>
+                  <a-col :span="24">输入组:</a-col>
+                  <a-col
+                    :span="24"
+                    v-for="(input_item, input_index) in item.Input"
+                    :key="input_index"
+                  >
+                    {{ input_item }}
+                  </a-col>
+                </a-row>
+              </a-col>
+              <a-col :span="12">
+                <a-row>
+                  <a-col :span="24">选项组:</a-col>
+                  <a-col
+                    :span="20"
+                    v-for="(output_item, output_index) in item.Output"
+                    :key="output_index"
+                  >
+                    {{ output_item }}
+                    <EditSelecterDelete :data="{nodeId: item.Id, linkId: output_item.Id}"/>
+                  </a-col>
+                </a-row>
+              </a-col>
+            </a-row>
+            <a-button type="primary" @click="delete_node(item.Id)">
+              删除该节点
+            </a-button>
             <EditEd :data="item" />
+            <EditSelecterAdd :data="item" />
           </a-card>
         </a-list-item>
       </a-list>
     </a-col>
     <a-col :span="2"> </a-col>
     <a-col :span="10">
-      <a-menu v-model:selectedKeys="current" mode="horizontal">
+      <!-- <a-menu v-model:selectedKeys="current" mode="horizontal">
         <a-menu-item key="add">添加</a-menu-item>
         <a-menu-item key="link">链接</a-menu-item>
-      </a-menu>
+      </a-menu> -->
       <div v-if="check.add">
         <a-divider orientation="left">添加新节点</a-divider>
         <EditAdd />
       </div>
-      <div v-if="check.link">
+      <!-- <div v-if="check.link">
         <a-divider orientation="left">链接新节点</a-divider>
         <EditLink />
-      </div>
+      </div> -->
     </a-col>
     <a-col :span="1"> </a-col>
   </a-row>
@@ -54,13 +70,15 @@
 import axios from "axios";
 import { ref, reactive, toRefs, provide, watch } from "vue";
 import EditAdd from "./EditAdd.vue";
-import EditLink from "./EditLink.vue";
 import EditEd from "./EditEd.vue";
+import EditSelecterAdd from "./EditSelecterAdd.vue";
+import EditSelecterDelete from "./EditSelecterDelete.vue";
 export default {
   components: {
     EditAdd,
-    EditLink,
     EditEd,
+    EditSelecterAdd,
+    EditSelecterDelete,
   },
   setup() {
     var current = ref(["add"]);
@@ -98,7 +116,6 @@ export default {
         },
       },
     });
-    axios.defaults.baseURL = "http://127.0.0.1:12345/";
     var get_list = function () {
       axios.get("story/list").then(function (response) {
         res.list = response.data.data;

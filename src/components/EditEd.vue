@@ -1,10 +1,10 @@
 <template>
-  <a-button type="primary" @click="showDrawer">编辑</a-button>
+  <a-button type="primary" @click="show_edit_drawer">编辑</a-button>
   <a-drawer
-    title="Basic Drawer"
+    title="节点编辑"
     placement="left"
     :closable="false"
-    v-model:visible="visible"
+    v-model:visible="edit_visible"
   >
     <a-row>
       <a-col :span="24">
@@ -56,14 +56,13 @@ export default {
       Input: props.data.Input,
       Output: props.data.Output,
     });
-    console.log(res);
-    const visible = ref(false);
-    const showDrawer = function () {
-      visible.value = true;
+    const edit_visible = ref(false);
+    const show_edit_drawer = function () {
+      edit_visible.value = true;
     };
     var edit_node = function (id, val, input, output) {
       console.log(id, val, input, output);
-      visible.value = false;
+      edit_visible.value = false;
       axios
         .post("story/node_edit", {
           id: id,
@@ -81,8 +80,8 @@ export default {
         });
     };
     return {
-      visible,
-      showDrawer,
+      edit_visible,
+      show_edit_drawer,
       edit_node,
       res,
     };

@@ -1,5 +1,11 @@
 <template>
   <a-layout id="components-layout-demo-fixed">
+    <div style="position: relative; top: 60px">
+      <GithubCorner
+        url="https://github.com/hedykan/trpg"
+        rightCorner
+      ></GithubCorner>
+    </div>
     <a-layout-header
       :style="{
         position: 'fixed',
@@ -24,6 +30,9 @@
             </a-menu-item>
           </a-menu>
         </a-col>
+        <a-col :span="6" style="text-align: center">
+          <Login />
+        </a-col>
       </a-row>
     </a-layout-header>
     <a-layout-content :style="{ padding: '0 50px', marginTop: '64px' }">
@@ -37,9 +46,12 @@
 
 <script>
 // import List from "./components/List.vue"
+import Login from "./components/Login.vue";
+import GithubCorner from "vue-github-corners";
+// import NodePic from "./components/NodePic.vue";
 export default {
   name: "App",
-  components: {},
+  components: { GithubCorner, Login },
 };
 </script>
 

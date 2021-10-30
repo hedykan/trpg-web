@@ -58,7 +58,6 @@ import { reactive, toRefs, inject } from "vue";
 import axios from "axios";
 export default {
   setup() {
-    axios.defaults.baseURL = "http://127.0.0.1:12345/";
     var formItemLayout = {
       labelCol: {
         xs: {

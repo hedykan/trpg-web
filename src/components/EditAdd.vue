@@ -48,7 +48,7 @@
       v-for="(value, index) in add.output"
       :key="index"
       v-bind="index === 0 ? formItemLayout : {}"
-      :label="index === 0 ? '输入节点' : ''"
+      :label="index === 0 ? '选项节点' : ''"
       :rules="{
         required: true,
         message: 'input can not be null',
@@ -83,16 +83,18 @@
     </a-form-item>
     <a-form-item v-bind="formItemLayoutWithOutLabel">
       <a-button type="primary" @click="add_node(add.val, add.input, add.output)">新增</a-button>
+      <Help :data="'先输入你想描述的故事，选项可以先不加'" />
     </a-form-item>
   </a-form>
 </template>
 
 <script>
 import { reactive, toRefs, inject } from "vue";
+import Help from "./Help.vue";
 import axios from "axios";
 export default {
+  components: {Help},
   setup() {
-    axios.defaults.baseURL = "http://127.0.0.1:12345/";
     var formItemLayout = {
       labelCol: {
         xs: {
