@@ -1,20 +1,34 @@
 <template>
-  <a-row v-if="!showStatus">
-    <a-col :span="16">
-      <a-input placeholder="给一个你的身份标识！" v-model:value="form.token" />
-    </a-col>
-    <a-col :span="8">
-      <a-button type="primary" @click="login_submit()" block>给你！</a-button>
-    </a-col>
-  </a-row>
-  <a-row v-if="showStatus">
-    <a-col :span="16">
-      <p style="color: #a6adb4">你好：{{ form.token }}</p>
-    </a-col>
-    <a-col :span="8">
-      <a-button type="primary" @click="logout_submit()" block>走了</a-button>
-    </a-col>
-  </a-row>
+  <div v-if="!common.mobile_status">
+    <a-row v-if="!showStatus">
+      <a-col :span="16">
+        <a-input
+          placeholder="给一个你的身份标识！"
+          v-model:value="form.token"
+        />
+      </a-col>
+      <a-col :span="8">
+        <a-button type="primary" @click="login_submit()" block>给你！</a-button>
+      </a-col>
+    </a-row>
+    <a-row v-if="showStatus">
+      <a-col :span="16">
+        <p style="color: #a6adb4">你好：{{ form.token }}</p>
+      </a-col>
+      <a-col :span="8">
+        <a-button type="primary" @click="logout_submit()" block>走了</a-button>
+      </a-col>
+    </a-row>
+  </div>
+  <div v-if="common.mobile_status" :style="{ textAlign: 'right' }">
+    <div v-if="!showStatus" :style="{ textAlign: 'right', color: '#a6adb4' }">
+      <a-input :style="{ width: '70px' }" v-model:value="form.token" />
+      <a-button type="link" @click="login_submit()">给你</a-button>
+    </div>
+    <div v-if="showStatus" :style="{ textAlign: 'right', color: '#a6adb4' }">
+      <a-button type="link" @click="logout_submit()">走了</a-button>
+    </div>
+  </div>
 </template>
 <script>
 import { reactive, ref } from "vue";
@@ -67,6 +81,7 @@ export default {
       showStatus,
       login_submit,
       logout_submit,
+      common,
     };
   },
 };

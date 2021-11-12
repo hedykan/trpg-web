@@ -1,16 +1,19 @@
 <template>
+  <router-link :to="'/room_list'"> 返回房间列表 </router-link>
   <a-page-header title="跑团页面" sub-title="在这里你可以尝试游玩你的团" />
   <a-row>
-    <a-col :span="6">
+    <a-col :span="span.other.all">
       <a-row>
-        <a-space direction="vertical">
-          <Background :data="background" />
-          <Vote ref="vote"></Vote>
-          <Msg />
-        </a-space>
+        <Background :data="background" :mobile_status="common.mobile_status" />
+        <Vote
+          ref="vote"
+          :mobile_status="common.mobile_status"
+          :room_id="common.room_id"
+        />
+        <Msg :mobile_status="common.mobile_status" />
       </a-row>
     </a-col>
-    <a-col :span="18">
+    <a-col :span="span.list.all">
       <a-list :grid="{ gutter: 16, column: 4 }">
         <a-list-item
           v-for="(item, index) in list"
@@ -19,12 +22,12 @@
         >
           <a-card>
             <a-row>
-              <a-col :span="16"> {{ item.Val }} </a-col>
-              <a-col :span="8">
+              <a-col :span="span.list.detail"> {{ item.Val }} </a-col>
+              <a-col :span="span.list.buttom">
                 <a-button
                   v-if="showStatus"
                   type="primary"
-                  @click="node_return(item.Id)"
+                  @click="node_return(item.Id, common.room_id)"
                 >
                   回退
                 </a-button>
@@ -35,16 +38,16 @@
         <a-list-item style="text-align: center">
           <a-card>
             <a-row>
-              <a-col :span="16">
+              <a-col :span="span.list.detail">
                 {{ now.Val }}
               </a-col>
-              <a-col :span="8">
+              <a-col :span="span.list.buttom">
                 <div v-if="showStatus">
                   <a-button
                     type="primary"
                     v-for="(item, index) in now.Output"
                     :key="index"
-                    @click="step(item.Id)"
+                    @click="step(item.Id, common.room_id)"
                   >
                     {{ item.Id }}: {{ item.Val }}
                   </a-button>
@@ -74,9 +77,25 @@ export default {
       background: "",
       showStatus: false,
     });
+    var span = {
+      other: {
+        all: 6,
+      },
+      list: {
+        all: 18,
+        detail: 16,
+        buttom: 8,
+      },
+    };
+    if (common.mobile_status) {
+      span.list.all = 24;
+      span.list.detail = 24;
+      span.list.buttom = 24;
+      span.other = 24;
+    }
     const vote = ref();
-    const vote_get = function () {
-      vote.value.vote_get();
+    const vote_get = function (room_id) {
+      vote.value.vote_get(room_id);
     };
     const login_status_check = function () {
       if (
@@ -93,38 +112,46 @@ export default {
       login_status_check();
     });
     var selecterShow = ref(true); // 自动显示选项
-    var get_list = function () {
-      axios.get("run/now_record_list").then(function (response) {
-        res.list = response.data.data;
-      });
+    var get_list = function (room_id) {
+      axios
+        .get("run/now_record_list?roomId=" + room_id)
+        .then(function (response) {
+          res.list = response.data.data;
+        });
     };
-    var get_node = function () {
-      axios.get("run/now_node_get").then(function (response) {
+    var get_node = function (room_id) {
+      axios.get("run/now_node_get?roomId=" + room_id).then(function (response) {
         res.now = response.data.data;
       });
     };
-    var get_background = function () {
-      axios.get("run/story_background_get").then(function (response) {
-        res.background = response.data.data.Background;
-      });
+    var get_background = function (room_id) {
+      axios
+        .get("run/story_background_get?roomId=" + room_id)
+        .then(function (response) {
+          res.background = response.data.data.Background;
+        });
     };
-    var step = function (id) {
-      axios.get("run/step" + "?id=" + id).then(function () {
-        get_list();
-        get_node();
-        vote_get();
-      });
+    var step = function (node_id, room_id) {
+      axios
+        .get("run/step" + "?nodeId=" + node_id + "&roomId=" + room_id)
+        .then(function () {
+          get_list(room_id);
+          get_node(room_id);
+          vote_get(room_id);
+        });
     };
-    var node_return = function (id) {
-      axios.get("run/return" + "?id=" + id).then(function () {
-        get_list();
-        get_node();
-        vote_get();
-      });
+    var node_return = function (node_id, room_id) {
+      axios
+        .get("run/return" + "?nodeId=" + node_id + "&roomId=" + room_id)
+        .then(function () {
+          get_list(room_id);
+          get_node(room_id);
+          vote_get(room_id);
+        });
     };
-    get_list();
-    get_node();
-    get_background();
+    get_list(common.room_id);
+    get_node(common.room_id);
+    get_background(common.room_id);
 
     return {
       ...toRefs(res),
@@ -133,6 +160,8 @@ export default {
       selecterShow,
       vote,
       vote_get,
+      common,
+      span,
     };
   },
 };

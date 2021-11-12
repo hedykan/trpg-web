@@ -1,11 +1,13 @@
 <template>
   <a-layout id="components-layout-demo-fixed">
-    <div style="position: relative; top: 60px">
-      <GithubCorner
-        url="https://github.com/hedykan/trpg"
-        rightCorner
-      ></GithubCorner>
-    </div>
+    <a-affix :offset-top="top">
+      <div style="position: relative; top: 60px">
+        <GithubCorner
+          url="https://github.com/hedykan/trpg"
+          rightCorner
+        ></GithubCorner>
+      </div>
+    </a-affix>
     <a-layout-header
       :style="{
         position: 'fixed',
@@ -15,7 +17,7 @@
       }"
     >
       <a-row>
-        <a-col :span="18" style="text-align: center">
+        <a-col :span="span.menu" style="text-align: center">
           <a-menu
             theme="dark"
             mode="horizontal"
@@ -23,14 +25,22 @@
             :style="{ lineHeight: '64px' }"
           >
             <a-menu-item key="1">
-              <router-link to="/">Home</router-link>
+              <router-link to="/">首页</router-link>
             </a-menu-item>
             <a-menu-item key="2">
-              <router-link to="/edit">Edit</router-link>
+              <router-link :to="'/room/' + 1">开跑</router-link>
+            </a-menu-item>
+            <a-menu-item key="3">
+              <router-link to="/edit">编辑</router-link>
+            </a-menu-item>
+            <a-menu-item key="4">
+              <router-link :to="'/room_list'">
+                房间列表
+              </router-link>
             </a-menu-item>
           </a-menu>
         </a-col>
-        <a-col :span="6" style="text-align: center">
+        <a-col :span="span.login" style="text-align: center">
           <Login />
         </a-col>
       </a-row>
@@ -49,9 +59,26 @@
 import Login from "./components/Login.vue";
 import GithubCorner from "vue-github-corners";
 // import NodePic from "./components/NodePic.vue";
+import { common } from "./common";
 export default {
   name: "App",
   components: { GithubCorner, Login },
+  setup() {
+    var span = {
+      menu: 18,
+      login: 6,
+    };
+    var top = 4;
+    if (common.mobile_status) {
+      span.menu = 14;
+      span.login = 10;
+    }
+    return {
+      span,
+      top,
+      common,
+    };
+  },
 };
 </script>
 

@@ -34,7 +34,9 @@
                     :key="output_index"
                   >
                     {{ output_item }}
-                    <EditSelecterDelete :data="{nodeId: item.Id, linkId: output_item.Id}"/>
+                    <EditSelecterDelete
+                      :data="{ nodeId: item.Id, linkId: output_item.Id }"
+                    />
                   </a-col>
                 </a-row>
               </a-col>
@@ -50,18 +52,10 @@
     </a-col>
     <a-col :span="2"> </a-col>
     <a-col :span="10">
-      <!-- <a-menu v-model:selectedKeys="current" mode="horizontal">
-        <a-menu-item key="add">添加</a-menu-item>
-        <a-menu-item key="link">链接</a-menu-item>
-      </a-menu> -->
       <div v-if="check.add">
         <a-divider orientation="left">添加新节点</a-divider>
         <EditAdd />
       </div>
-      <!-- <div v-if="check.link">
-        <a-divider orientation="left">链接新节点</a-divider>
-        <EditLink />
-      </div> -->
     </a-col>
     <a-col :span="1"> </a-col>
   </a-row>
@@ -73,6 +67,7 @@ import EditAdd from "./EditAdd.vue";
 import EditEd from "./EditEd.vue";
 import EditSelecterAdd from "./EditSelecterAdd.vue";
 import EditSelecterDelete from "./EditSelecterDelete.vue";
+import { common } from "../common";
 export default {
   components: {
     EditAdd,
@@ -116,8 +111,8 @@ export default {
         },
       },
     });
-    var get_list = function () {
-      axios.get("story/list").then(function (response) {
+    var get_list = function (room_id) {
+      axios.get("story/list?roomId=" + room_id).then(function (response) {
         res.list = response.data.data;
       });
     };
@@ -126,7 +121,7 @@ export default {
         get_list();
       });
     };
-    get_list();
+    get_list(common.room_id);
     provide("edit_get_list", get_list);
     return {
       current,

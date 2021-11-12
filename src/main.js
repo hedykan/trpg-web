@@ -9,8 +9,8 @@ import { common } from './common'
 
 let app = createApp(App)
 
-axios.defaults.baseURL = 'https://trpg-api.juhuan.store/'
-// axios.defaults.baseURL = 'http://127.0.0.1:12345/'
+// axios.defaults.baseURL = 'https://trpg-api.juhuan.store/'
+axios.defaults.baseURL = 'http://127.0.0.1:12345/'
 axios.defaults.headers.common['Authorization'] = localStorage.getItem('trpg-token')
 axios.interceptors.response.use(function (response) {
     if (response.data.code !== 200) {
@@ -24,6 +24,11 @@ if(localStorage.getItem('trpg-token') === 'null') {
     common.token = localStorage.getItem('trpg-token')
 }
 common.login_status = JSON.parse(localStorage.getItem('trpg-auth-status'))
+if(window.innerWidth < 1024) {
+    common.mobile_status = true
+} else {
+    common.mobile_status = false
+}
 
 app
     .use(Antd)

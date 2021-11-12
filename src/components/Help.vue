@@ -7,13 +7,13 @@
   </a-popover>
 </template>
 <script>
+import { toRefs } from "@vue/reactivity";
 export default {
   props: {
     data: String,
   },
   setup(props) {
-    console.log(props);
-    return props.data;
+    return { ...toRefs(props) };
   },
 };
 </script>

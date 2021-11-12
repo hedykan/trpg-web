@@ -69,6 +69,7 @@ export default {
           val: val,
           input: input,
           output: output,
+          roomId: 1,
         })
         .then(function (response) {
           if (response.data.data === true) {
