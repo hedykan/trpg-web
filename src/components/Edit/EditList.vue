@@ -5,11 +5,11 @@
         <a-col :span="24">
           <p>{{ item.Val }}</p>
         </a-col>
-        <a-col :span="6">
-          <a-button type="primary" shape="round"> 编辑 </a-button>
-        </a-col>
-        <a-col :span="6">
-          <a-button type="primary" shape="round"> 删除此节点 </a-button>
+        <a-col :span="24">
+          <a-space>
+            <a-button type="primary" shape="round"> 编辑 </a-button>
+            <a-button type="primary" shape="round"> 删除此节点 </a-button>
+          </a-space>
         </a-col>
       </a-row>
     </a-list-item>
